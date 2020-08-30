@@ -28,33 +28,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.widget.Toast;
-
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import io.square1.richtextlib.R;
 
 /**
  * Created by roberto on 17/09/15.
@@ -90,8 +67,7 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
 
                 if (msg.what == 0) {
                     synchronizeHolders();
-                }
-                else if (msg.what == 1) {
+                } else if (msg.what == 1) {
                     synchronizeCurrent();
                 }
             }
@@ -202,15 +178,13 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
                 // Prepare the player with the source.
                 mediaPlayer.prepare(mediaSource);
                 mMediaPlayer = mediaPlayer;
-            }
-            catch (Exception exc) {
+            } catch (Exception exc) {
                 if (mediaPlayer != null) {
                     mediaPlayer.release();
                 }
                 mPendingFile = null;
             }
-        }
-        else if (mMediaPlayer != null &&
+        } else if (mMediaPlayer != null &&
                 mMediaPlayer.getPlayWhenReady() == false) {
             mMediaPlayer.setPlayWhenReady(true);
             mHandler.sendEmptyMessage(1);
@@ -231,8 +205,7 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
             mHandler.removeMessages(0);
             mHandler.removeMessages(1);
             notifyState();
-        }
-        else if (TextUtils.equals(mPendingFile, audio) == true) {
+        } else if (TextUtils.equals(mPendingFile, audio) == true) {
             mPendingFile = null;
             cleanCurrentPLayer();
         }
@@ -336,8 +309,7 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
             final int delta = 2 * 1000;
             if (forward) {
                 currentPosition = Math.min(media.duration, currentPosition + delta);
-            }
-            else {
+            } else {
                 currentPosition = Math.max(0, currentPosition - delta);
             }
             mMediaPlayer.seekTo(currentPosition);
@@ -417,8 +389,7 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
 
         try {
             cleanCurrentPLayer();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
@@ -442,8 +413,7 @@ public class AudioPlayer implements AudioPlayerHolder.AudioPlayerProvider,
             ai = pm.getApplicationInfo(mContext.getPackageName(), 0);
             final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
             return applicationName;
-        }
-        catch (final PackageManager.NameNotFoundException e) {
+        } catch (final PackageManager.NameNotFoundException e) {
             ai = null;
         }
 

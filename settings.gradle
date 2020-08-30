@@ -1,1 +1,1 @@
-include ':RichTextExample', ':richtext'
+include ':richtext'

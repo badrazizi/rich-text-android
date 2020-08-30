@@ -4,7 +4,6 @@ def appLibs = rootProject.ext.appLibraries;
 
 
 ext {
-
     bintrayRepo = System.getenv("REPO")
     bintrayName = System.getenv("NAME")
 
@@ -30,12 +29,11 @@ ext {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -54,14 +52,14 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildToolsVersion = '28.0.3'
 
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "org.ccil.cowan.tagsoup:tagsoup:${appLibs.TAGSOUP_VERSION}"
-    compile "com.google.android.exoplayer:exoplayer:${appLibs.ANDROID_EXOPLAYER_VERSION}"
-    compile "com.android.support:support-v4:${appLibs.ANDROID_SUPPORT_VERSION}"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.ccil.cowan.tagsoup:tagsoup:1.2"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
 }
 
@@ -93,8 +91,6 @@ artifacts {
 
 
 bintray {
-
-
     user = System.getenv("BINTRAY_USER")
     key = System.getenv("BINTRAY_API_KEY")
 
@@ -125,9 +121,6 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = publishedGroupId                               // Maven Group ID for the artifact
 
 install {
-
-
-
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
         pom {

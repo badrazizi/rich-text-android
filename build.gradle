@@ -17,9 +17,6 @@ ext {
 
     //control from here the libraries versions
     appLibraries = [
-            ANDROID_SUPPORT_VERSION: '26.1.0',
-            ANDROID_EXOPLAYER_VERSION: 'r2.5.2',
-            TAGSOUP_VERSION: '1.2',
             GLIDE_VERSION: '3.6.0',
             RICH_TEXT_VERSION: getRichTextLibVersionName()
     ]
