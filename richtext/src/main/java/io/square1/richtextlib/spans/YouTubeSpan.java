@@ -95,7 +95,7 @@ public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
         super.onSpannedSetToView(view);
 
         if(mYoutubeIcon == null){
-            mYoutubeIcon = view.getContext().getResources().getDrawable(R.drawable.youtube_play);
+            mYoutubeIcon = view.getContext().getResources().getDrawable(R.drawable.video_play);
             mYoutubeIcon.setBounds(0,0,mYoutubeIcon.getIntrinsicWidth(), mYoutubeIcon.getIntrinsicHeight());
         }
 

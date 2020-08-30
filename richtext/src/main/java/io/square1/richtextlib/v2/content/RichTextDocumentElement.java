@@ -47,7 +47,6 @@ import io.square1.richtextlib.spans.TypefaceSpan;
 import io.square1.richtextlib.spans.URLSpan;
 import io.square1.richtextlib.spans.UnderlineSpan;
 import io.square1.richtextlib.spans.UrlBitmapSpan;
-import io.square1.richtextlib.spans.VideoPlayerSpan;
 import io.square1.richtextlib.util.NumberUtils;
 import io.square1.richtextlib.v2.utils.SpannedBuilderUtils;
 
@@ -194,15 +193,6 @@ public class RichTextDocumentElement extends DocumentElement implements CharSequ
             append(SpannedBuilderUtils.NO_SPACE);
             getCurrent().addSpan(new UrlBitmapSpan(Uri.parse(imageUrl),
                     w, h, w));
-            return this;
-        }
-
-
-        public TextBuilder video(String videoUrl) {
-            append(SpannedBuilderUtils.NO_SPACE);
-            getCurrent().addSpan(new VideoPlayerSpan(videoUrl,
-                    NumberUtils.INVALID, NumberUtils.INVALID,
-                    NumberUtils.INVALID));
             return this;
         }
 

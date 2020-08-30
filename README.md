@@ -78,7 +78,7 @@ Enable click events
 Supply an instance of a clicked observer to receive on click events on parts of the content: 
 
 ```java
-        contentView.setOnSpanClickedObserver(new RichContentViewDisplay.OnSpanClickedObserver() {
+        contentView.setOnSpanClickedObserver(new View.OnSpanClickedObserver() {
             @Override
             public boolean onSpanClicked(ClickableSpan span) {
                 String action = span.getAction();

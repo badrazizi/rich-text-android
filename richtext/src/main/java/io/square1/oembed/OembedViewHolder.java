@@ -61,15 +61,15 @@ public class OembedViewHolder  {
 
                 String provider = mOembed.getProviderName();
                 if ("Vimeo".equalsIgnoreCase(provider)) {
-                    mActionButton.setImageResource(R.drawable.vimeo_play);
+                    mActionButton.setImageResource(R.drawable.video_play);
                     mProviderLogo.setImageDrawable(null);
                 } else if ("Vine".equalsIgnoreCase(provider)) {
-                    mActionButton.setImageResource(R.drawable.vimeo_play);
-                    mProviderLogo.setImageResource(R.drawable.vine_logo);
+                    mActionButton.setImageResource(R.drawable.video_play);
+                    mProviderLogo.setImageResource(R.drawable.video_play);
                 }
                 if ("Instagram".equalsIgnoreCase(provider)) {
                     mActionButton.setImageDrawable(null);
-                    mProviderLogo.setImageResource(R.drawable.instagram_logo);
+                    mProviderLogo.setImageResource(R.drawable.video_play);
                 }
             }
         }
