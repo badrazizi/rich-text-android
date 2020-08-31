@@ -1,3 +1,6 @@
+# Notice
+This fork does not follow base repo, I simply add what i think is missing or adding features that i need in my app.
+
 
 # RichText Library
 
