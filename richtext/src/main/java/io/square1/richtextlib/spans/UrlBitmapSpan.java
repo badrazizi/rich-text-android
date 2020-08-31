@@ -29,9 +29,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
-
 import android.text.style.ReplacementSpan;
 import android.text.style.UpdateAppearance;
+import android.util.Log;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
@@ -46,12 +46,12 @@ import io.square1.richtextlib.util.UniqueId;
 /**
  * Created by roberto on 23/06/15.
  */
-public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan,  UpdateAppearance, RichTextSpan {
+public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan, UpdateAppearance, RichTextSpan {
 
     public static final Creator<UrlBitmapSpan> CREATOR = DynamicParcelableCreator.getInstance(UrlBitmapSpan.class);
     public static final int TYPE = UniqueId.getType();
 
-    public static final double RATIO =  3.0 / 4.0;
+    public static final double RATIO = 3.0 / 4.0;
 
     /**
      * A constant indicating that the bottom of this span should be aligned
@@ -85,19 +85,13 @@ public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan, 
 
     }
 
-    public UrlBitmapSpan(Bitmap bitmap,
-                         Uri image,
-                         int imageWidth,
-                         int imageHeight,
-                         int maxImageWidth,
-                         int alignment) {
-
+    public UrlBitmapSpan(Bitmap bitmap, Uri image, int imageWidth, int imageHeight, int maxImageWidth, int alignment) {
         super();
         mImage = image;
         mMaxImageWidth = maxImageWidth;
 
         mProvidedSize = new Size(imageWidth, imageHeight);
-        mActualSize = new Size(500,500);/// pass a default size while we load
+        mActualSize = new Size(500, 500);/// pass a default size while we load
         mVerticalAlignment = alignment;
 
         if (bitmap != null) {
@@ -112,6 +106,11 @@ public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan, 
 
     public Uri getUri() {
         return mImage;
+    }
+
+    public void setUri(Uri image) {
+        this.mImage = image;
+        loadImage();
     }
 
     @Override
@@ -181,49 +180,48 @@ public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan, 
 
     }
 
-    private int containerViewHasMeasure(){
-        if(mRef != null && mRef.get() != null){
+    private int containerViewHasMeasure() {
+        if (mRef != null && mRef.get() != null) {
             RichContentView display = mRef.get();
 
             int measured = display.getMeasuredWidth() -
                     display.getPaddingLeft() -
                     display.getPaddingRight();
 
-            if(measured > 0) return measured;
+            if (measured > 0) return measured;
         }
 
         return NumberUtils.INVALID;
     }
 
-    protected Rect getImageBounds(){
+    protected Rect getImageBounds() {
 
         final int maxAvailableWidth = containerViewHasMeasure();
 
         //we force the aspect ratio and size if the size is hard coded
-        if(Size.valid(mProvidedSize) == true){
+        if (Size.valid(mProvidedSize) == true) {
 
-            if(maxAvailableWidth == NumberUtils.INVALID) {
+            if (maxAvailableWidth == NumberUtils.INVALID) {
                 return mProvidedSize.bounds();
-            }
-            else if(mProvidedSize.getWidth() > maxAvailableWidth) {
+            } else if (mProvidedSize.getWidth() > maxAvailableWidth) {
                 // what if we exceed the available size ?
-                mProvidedSize = new Size(maxAvailableWidth, (int)(maxAvailableWidth * mProvidedSize.getRatio()));
+                mProvidedSize = new Size(maxAvailableWidth, (int) (maxAvailableWidth * mProvidedSize.getRatio()));
             }
             return mProvidedSize.bounds();
         }
 
-        if(Size.valid(mActualSize) == true){// we have the image size
+        if (Size.valid(mActualSize) == true) {// we have the image size
 
-            if(maxAvailableWidth == NumberUtils.INVALID){// container not measured
-                return new Rect(0, 0, mMaxImageWidth, (int)(mMaxImageWidth * mActualSize.getRatio()));
-            }else {
-                return new Rect(0, 0, maxAvailableWidth, (int)(maxAvailableWidth * mActualSize.getRatio()));
+            if (maxAvailableWidth == NumberUtils.INVALID) {// container not measured
+                return new Rect(0, 0, mMaxImageWidth, (int) (mMaxImageWidth * mActualSize.getRatio()));
+            } else {
+                return new Rect(0, 0, maxAvailableWidth, (int) (maxAvailableWidth * mActualSize.getRatio()));
             }
-        }else { // we need to wait for the image to be loaded to know its size
-            if(maxAvailableWidth == NumberUtils.INVALID){// container not measured
-                return new Rect(0, 0, mMaxImageWidth, (int)(mMaxImageWidth * RATIO));
-            }else {
-                return new Rect(0, 0, maxAvailableWidth, (int)(maxAvailableWidth * RATIO));
+        } else { // we need to wait for the image to be loaded to know its size
+            if (maxAvailableWidth == NumberUtils.INVALID) {// container not measured
+                return new Rect(0, 0, mMaxImageWidth, (int) (mMaxImageWidth * RATIO));
+            } else {
+                return new Rect(0, 0, maxAvailableWidth, (int) (maxAvailableWidth * RATIO));
             }
         }
     }
@@ -333,6 +331,9 @@ public class UrlBitmapSpan extends ReplacementSpan implements RemoteBitmapSpan, 
     }
 
     private void loadImage() {
+        if(Uri.EMPTY.equals(mImage)) {
+            return;
+        }
 
         if (mLoading == false && mBitmap == null) {
             mLoading = true;

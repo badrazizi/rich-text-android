@@ -24,7 +24,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ParagraphStyle;
 
+import io.square1.richtextlib.spans.DailyMotionSpan;
 import io.square1.richtextlib.spans.RelativeSizeSpan;
+import io.square1.richtextlib.spans.VimeoSpan;
 import io.square1.richtextlib.v2.content.RichTextDocumentElement;
 import io.square1.richtextlib.spans.URLSpan;
 import io.square1.richtextlib.spans.UnsupportedContentSpan;
@@ -181,6 +183,54 @@ public class SpannedBuilderUtils {
         int len = builder.length();
         builder.append(NO_SPACE);
         builder.setSpan(new YouTubeSpan(youtubeId, width,  height, maxImageWidth),
+                len,
+                builder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    }
+
+    public static void makeVimeo(String vimeoId, int maxImageWidth, RichTextDocumentElement builder) {
+
+        ensureAtLeastThoseNewLines(builder, 1);
+        int len = builder.length();
+        builder.append(NO_SPACE);
+        builder.setSpan(new VimeoSpan(vimeoId, maxImageWidth),
+                len,
+                builder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    }
+
+    public static void makeVimeo(String vimeoId,int width, int height, int maxImageWidth, RichTextDocumentElement builder) {
+
+        ensureAtLeastThoseNewLines(builder, 1);
+        int len = builder.length();
+        builder.append(NO_SPACE);
+        builder.setSpan(new VimeoSpan(vimeoId, width,  height, maxImageWidth),
+                len,
+                builder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    }
+
+    public static void makeDailyMotion(String dailyMotionId, int maxImageWidth, RichTextDocumentElement builder) {
+
+        ensureAtLeastThoseNewLines(builder, 1);
+        int len = builder.length();
+        builder.append(NO_SPACE);
+        builder.setSpan(new DailyMotionSpan(dailyMotionId, maxImageWidth),
+                len,
+                builder.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    }
+
+    public static void makeDailyMotion(String dailyMotionId,int width, int height, int maxImageWidth, RichTextDocumentElement builder) {
+
+        ensureAtLeastThoseNewLines(builder, 1);
+        int len = builder.length();
+        builder.append(NO_SPACE);
+        builder.setSpan(new DailyMotionSpan(dailyMotionId, width,  height, maxImageWidth),
                 len,
                 builder.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

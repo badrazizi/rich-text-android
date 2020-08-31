@@ -368,13 +368,15 @@ public class RichTextV2 {
                 // in case we find  embeds we add them as individual elements to the RichDocument
                 // is the current link an embed ?
                 linkingToEmbed = EmbedUtils.parseLink(accumulatedText, String.valueOf(link), new EmbedUtils.ParseLinkCallback() {
-
                     @Override
                     public void onLinkParsed(Object callingObject, String result, EmbedUtils.TEmbedType type) {
                         if(type == EmbedUtils.TEmbedType.EYoutube){
-                            //we just take care of youtbe videos inline
                             SpannedBuilderUtils.makeYoutube(result, getCurrentStyle().maxImageWidth(), mOutput);
-                        }else{
+                        } else if(type == EmbedUtils.TEmbedType.EVimeo){
+                            SpannedBuilderUtils.makeVimeo(result, getCurrentStyle().maxImageWidth(), mOutput);
+                        } else if(type == EmbedUtils.TEmbedType.EDailyMotion){
+                            SpannedBuilderUtils.makeDailyMotion(result, getCurrentStyle().maxImageWidth(), mOutput);
+                        } else {
                             onEmbedFound(type, result);
                         }
                     }
@@ -385,10 +387,15 @@ public class RichTextV2 {
 
                 //double check if it is a youtube video ?
                 final String youtubeId = EmbedUtils.getYoutubeVideoId(String.valueOf(link));
+                final String viemoId = EmbedUtils.getVimeoId(String.valueOf(link));
+                final String dailyMotionId = EmbedUtils.getDailyMotionId(String.valueOf(link));
                 if(TextUtils.isEmpty(youtubeId) == false) {
                     SpannedBuilderUtils.makeYoutube(youtubeId, getCurrentStyle().maxImageWidth(), mOutput);
-                }else {
-
+                } else if(TextUtils.isEmpty(viemoId) == false) {
+                    SpannedBuilderUtils.makeVimeo(viemoId, getCurrentStyle().maxImageWidth(), mOutput);
+                } else if(TextUtils.isEmpty(dailyMotionId) == false) {
+                    SpannedBuilderUtils.makeDailyMotion(dailyMotionId, getCurrentStyle().maxImageWidth(), mOutput);
+                } else {
                     //is there any white space here ??
                     Pattern pattern = Pattern.compile("\\s");
                     Matcher matcher = pattern.matcher(link);

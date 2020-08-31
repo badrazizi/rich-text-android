@@ -20,10 +20,11 @@
 package io.square1.richtextlib.v2.parser.handlers;
 
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.webkit.URLUtil;
+import android.util.Log;
 
 import io.square1.richtextlib.EmbedUtils;
+import io.square1.richtextlib.spans.DailyMotionSpan;
+import io.square1.richtextlib.spans.VimeoSpan;
 import io.square1.richtextlib.spans.YouTubeSpan;
 import io.square1.richtextlib.util.NumberUtils;
 import io.square1.richtextlib.util.WebAddress;
@@ -37,7 +38,7 @@ import io.square1.richtextlib.v2.utils.SpannedBuilderUtils;
 /**
  * Created by roberto on 04/09/15.
  */
-public class IFRAMEHandler extends TagHandler  {
+public class IFRAMEHandler extends TagHandler {
 
     @Override
     public void onTagOpen(MarkupContext context, MarkupTag tag, final RichTextDocumentElement out) {
@@ -46,7 +47,7 @@ public class IFRAMEHandler extends TagHandler  {
 
         SpannedBuilderUtils.trimTrailNewlines(out, 0);
         boolean embedFound = false;
-        if(context.getStyle().extractEmbeds()  == true){
+        if (context.getStyle().extractEmbeds() == true) {
 
             embedFound = EmbedUtils.parseLink(context, href, new EmbedUtils.ParseLinkCallback() {
 
@@ -57,15 +58,24 @@ public class IFRAMEHandler extends TagHandler  {
                         SpannedBuilderUtils.makeYoutube(result, context.getStyle().maxImageWidth(), out);
                         return;
                     }
+
+                    if (type == EmbedUtils.TEmbedType.EVimeo) {
+                        SpannedBuilderUtils.makeVimeo(result, context.getStyle().maxImageWidth(), out);
+                        return;
+                    }
+
+                    if (type == EmbedUtils.TEmbedType.EDailyMotion) {
+                        SpannedBuilderUtils.makeDailyMotion(result, context.getStyle().maxImageWidth(), out);
+                        return;
+                    }
                     //remove new lines here as we are splitting content
                     context.getRichText().onEmbedFound(type, result);
                 }
             });
         }
 
-        if(embedFound == false){
-
-            if(context.getStyle().extractEmbeds() == true) {
+        if (embedFound == false) {
+            if (context.getStyle().extractEmbeds() == true) {
                 // we use the webview cell
                 WebAddress webAddress = WebAddress.parseWebAddress(href);
                 if (webAddress != null) {
@@ -77,14 +87,24 @@ public class IFRAMEHandler extends TagHandler  {
                     int h = NumberUtils.parseAttributeDimension(tag.attributes.getValue("height"), 9);
                     context.getRichText().onIframeFound(webAddress.toString(), w, h);
                 }
-            }else {
+            } else {
                 String youtubeId = EmbedUtils.getYoutubeVideoId(href);
-                if(TextUtils.isEmpty(youtubeId) == true) {
-                    SpannedBuilderUtils.makeUnsupported(href, null, out);
-                }else {
+                String vimeoId = EmbedUtils.getVimeoId(href);
+                String dailyMotionId = EmbedUtils.getDailyMotionId(href);
+                if (TextUtils.isEmpty(youtubeId) == false) {
                     int w = NumberUtils.parseAttributeDimension(tag.attributes.getValue("width"), YouTubeSpan.DEFAULT_WIDTH);
                     int h = NumberUtils.parseAttributeDimension(tag.attributes.getValue("height"), YouTubeSpan.DEFAULT_HEIGHT);
                     SpannedBuilderUtils.makeYoutube(youtubeId, w, h, context.getStyle().maxImageWidth(), out);
+                } else if (TextUtils.isEmpty(vimeoId) == false) {
+                    int w = NumberUtils.parseAttributeDimension(tag.attributes.getValue("width"), VimeoSpan.DEFAULT_WIDTH);
+                    int h = NumberUtils.parseAttributeDimension(tag.attributes.getValue("height"), VimeoSpan.DEFAULT_HEIGHT);
+                    SpannedBuilderUtils.makeVimeo(vimeoId, w, h, context.getStyle().maxImageWidth(), out);
+                } else if (TextUtils.isEmpty(dailyMotionId) == false) {
+                    int w = NumberUtils.parseAttributeDimension(tag.attributes.getValue("width"), DailyMotionSpan.DEFAULT_WIDTH);
+                    int h = NumberUtils.parseAttributeDimension(tag.attributes.getValue("height"), DailyMotionSpan.DEFAULT_HEIGHT);
+                    SpannedBuilderUtils.makeDailyMotion(dailyMotionId, w, h, context.getStyle().maxImageWidth(), out);
+                } else {
+                    SpannedBuilderUtils.makeUnsupported(href, null, out);
                 }
             }
         }
@@ -98,13 +118,13 @@ public class IFRAMEHandler extends TagHandler  {
 
 
     @Override
-    public boolean closeWhenSplitting(){
+    public boolean closeWhenSplitting() {
         return false;
     }
 
 
     @Override
-    public boolean openWhenSplitting(){
+    public boolean openWhenSplitting() {
         return false;
     }
 

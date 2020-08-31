@@ -20,58 +20,62 @@
 package io.square1.richtextlib.spans;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
-
-import java.lang.ref.WeakReference;
+import android.text.TextUtils;
 
 import io.square1.parcelable.DynamicParcelableCreator;
 import io.square1.richtextlib.EmbedUtils;
 import io.square1.richtextlib.R;
 import io.square1.richtextlib.ui.RichContentView;
-import io.square1.richtextlib.ui.RichContentViewDisplay;
 import io.square1.richtextlib.util.NumberUtils;
 import io.square1.richtextlib.util.UniqueId;
 
 /**
  * Created by roberto on 23/06/15.
  */
-public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
+public class VimeoSpan extends UrlBitmapSpan implements ClickableSpan {
 
     public static final int DEFAULT_WIDTH = 480;
     public static final int DEFAULT_HEIGHT = 360;
 
 
-    public static final Creator<YouTubeSpan> CREATOR  = DynamicParcelableCreator.getInstance(YouTubeSpan.class);
+    public static final Creator<VimeoSpan> CREATOR  = DynamicParcelableCreator.getInstance(VimeoSpan.class);
     public static final int TYPE = UniqueId.getType();
 
-    private Drawable mYoutubeIcon;
-    private String mYoutubeId;
+    private Drawable mVimeoIcon;
+    private String mVimeoId;
 
-    public String getYoutubeId(){
-        return mYoutubeId;
+    public String getVimeoId(){
+        return mVimeoId;
     }
 
-    public YouTubeSpan(){
+    public VimeoSpan(){
         super();
     }
 
-    public YouTubeSpan(String youtubeId, int maxWidth){
-        this(youtubeId, DEFAULT_WIDTH, DEFAULT_HEIGHT, maxWidth);
-        mYoutubeId = youtubeId;
+    public VimeoSpan(String vimeoId, int maxWidth){
+        this(vimeoId, DEFAULT_WIDTH,DEFAULT_HEIGHT,maxWidth);
+        mVimeoId = vimeoId;
     }
 
-    public YouTubeSpan(String youtubeId, int width, int height, int maxWidth){
-        super(Uri.parse(EmbedUtils.getYoutubeThumbnailUrl(youtubeId)), NumberUtils.INVALID, NumberUtils.INVALID,maxWidth);
-        mYoutubeId = youtubeId;
-    }
+    public VimeoSpan(String vimeoId, int width, int height, int maxWidth){
+        super(Uri.EMPTY, NumberUtils.INVALID, NumberUtils.INVALID, maxWidth);
+        EmbedUtils.getVimeoThumbnailUrl(vimeoId, new EmbedUtils.ThumbnailUrlCallback() {
+            @Override
+            public void onReceived(String result) {
+                if(result != null || !TextUtils.isEmpty(result)) {
+                    setUri(Uri.parse(result));
+                }
+            }
+        });
 
+        mVimeoId = vimeoId;
+    }
 
     @Override
     public int getType() {
@@ -81,19 +85,17 @@ public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
     @Override
     public void readFromParcel(Parcel src) {
         super.readFromParcel(src);
-        mYoutubeId = src.readString();
+        mVimeoId = src.readString();
 
     }
-
-
 
     @Override
     public void onSpannedSetToView(RichContentView view) {
         super.onSpannedSetToView(view);
 
-        if(mYoutubeIcon == null){
-            mYoutubeIcon = view.getContext().getResources().getDrawable(R.drawable.video_play);
-            mYoutubeIcon.setBounds(0,0,mYoutubeIcon.getIntrinsicWidth(), mYoutubeIcon.getIntrinsicHeight());
+        if(mVimeoIcon == null){
+            mVimeoIcon = view.getContext().getResources().getDrawable(R.drawable.video_play);
+            mVimeoIcon.setBounds(0,0,mVimeoIcon.getIntrinsicWidth(), mVimeoIcon.getIntrinsicHeight());
         }
 
     }
@@ -108,20 +110,15 @@ public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeString(mYoutubeId);
+        dest.writeString(mVimeoId);
     }
-
-
-
-
-
 
     @Override
     public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
         super.draw(canvas,text,start,end,x,top,y,bottom,paint);
         if(getBitmap() == null) return;
 
-        final Rect bitmapBounds = mYoutubeIcon.getBounds();
+        final Rect bitmapBounds = mVimeoIcon.getBounds();
 
         Rect currentImage = getImageBounds();
 
@@ -135,9 +132,9 @@ public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
         x = x - mRef.get().getPaddingLeft();
         canvas.translate(x, transY);
 
-        if (mYoutubeIcon != null) {
-            mYoutubeIcon.setBounds(bitmapBounds);
-            mYoutubeIcon.draw(canvas);
+        if (mVimeoIcon != null) {
+            mVimeoIcon.setBounds(bitmapBounds);
+            mVimeoIcon.draw(canvas);
         }
 
         canvas.restore();
@@ -146,6 +143,6 @@ public class YouTubeSpan extends UrlBitmapSpan implements ClickableSpan {
 
     @Override
     public String getAction() {
-        return "http://www.youtube.com/watch?v=" + getYoutubeId();
+        return "https://player.vimeo.com/video/" + getVimeoId();
     }
 }

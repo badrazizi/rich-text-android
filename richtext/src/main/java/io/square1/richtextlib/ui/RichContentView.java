@@ -50,6 +50,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import io.square1.richtextlib.R;
+import io.square1.richtextlib.spans.VimeoSpan;
 import io.square1.richtextlib.v2.RichTextV2;
 import io.square1.richtextlib.v2.content.DocumentElement;
 import io.square1.richtextlib.v2.content.RichDocument;
@@ -418,14 +419,12 @@ public class RichContentView extends FrameLayout implements RichContentViewDispl
                 continue;
 
             if(span instanceof YouTubeSpan){
-
                 String id = ((YouTubeSpan)span).getYoutubeId();
-
-                this.getContext().
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://www.youtube.com/watch?v=" + id)));
-            }
-            else if(span instanceof URLSpan){
+                this.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id)));
+            } else if(span instanceof VimeoSpan){
+                String id = ((VimeoSpan)span).getVimeoId();
+                this.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://vimeo.com/" + id)));
+            } else if(span instanceof URLSpan){
 
                 String url = ((URLSpan)span).getURL();
                 try {
